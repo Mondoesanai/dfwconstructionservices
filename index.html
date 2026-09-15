@@ -89,7 +89,10 @@
         <img src="assets/dfw-logo.png" alt="DFW Construction Services" class="h-10 sm:h-11 w-auto">
         <div class="hidden sm:block text-[10px] tracking-[0.14em] text-ink/40 font-sans font-semibold uppercase border-l border-paper-line pl-3">Flat-Fee<br>Facelift</div>
       </div>
-      <button id="navRunBtn" type="button" class="btn-press text-xs sm:text-sm font-display font-bold px-4 sm:px-5 py-2.5 rounded-md bg-coral hover:bg-coral-dark text-white shadow-card">Run the Tool</button>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="book.html" class="btn-press text-xs sm:text-sm font-display font-bold px-4 sm:px-5 py-2.5 rounded-md border border-ink/15 text-ink hover:border-coral hover:text-coral">Book Consultation</a>
+        <button id="navRunBtn" type="button" class="btn-press text-xs sm:text-sm font-display font-bold px-4 sm:px-5 py-2.5 rounded-md bg-coral hover:bg-coral-dark text-white shadow-card">Run the Tool</button>
+      </div>
     </div>
   </header>
 
@@ -153,10 +156,11 @@
 
         <!-- STEP 2: results -->
         <div id="results" class="hidden mt-10 fade-in">
-          <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
-            <span id="propertyDetails" class="hidden text-xs font-sans font-semibold text-ink/50"></span>
-            <span id="demoBadge" class="hidden text-[10px] font-sans font-bold uppercase tracking-wide bg-sky-light text-sky-dark px-3 py-1.5 rounded-md ml-auto">Sample Data · Live Key Not Connected</span>
+          <div class="flex justify-end mb-3">
+            <span id="demoBadge" class="hidden text-[10px] font-sans font-bold uppercase tracking-wide bg-sky-light text-sky-dark px-3 py-1.5 rounded-md">Sample Data · Live Key Not Connected</span>
           </div>
+
+          <div id="propertyDetails" class="hidden grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6"></div>
 
           <div class="grid sm:grid-cols-2 gap-4 mb-8">
             <div class="bg-paper-card border border-paper-line rounded-lg p-5">
@@ -233,7 +237,7 @@
             <div class="text-[11px] font-sans font-bold uppercase tracking-[0.16em] text-sky-dark mb-2">Next Step</div>
             <h4 class="font-display font-extrabold text-2xl sm:text-3xl tracking-[-0.01em] text-ink mb-2">Ready to sell for more profit?</h4>
             <p class="text-sm text-ink/55 max-w-md mx-auto mb-6 leading-relaxed">A licensed DFW Construction estimator walks the property with you and locks in the scope — no obligation, no pressure.</p>
-            <a href="#" class="btn-press inline-flex items-center gap-2 bg-coral hover:bg-coral-dark text-white font-display font-bold text-base px-9 py-4 rounded-md shadow-lift">
+            <a id="bookConsultCta" href="book.html" class="btn-press inline-flex items-center gap-2 bg-coral hover:bg-coral-dark text-white font-display font-bold text-base px-9 py-4 rounded-md shadow-lift">
               Book an In-Home Consult
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
@@ -414,14 +418,28 @@
     document.getElementById('estRange').textContent = `Range: ${fmtUSD(data.low)} – ${fmtUSD(data.high)}`;
     document.getElementById('demoBadge').classList.toggle('hidden', data.source !== 'demo');
 
-    const details = [];
-    if (data.bedrooms) details.push(`${data.bedrooms} bed`);
-    if (data.bathrooms) details.push(`${data.bathrooms} bath`);
-    if (data.squareFootage) details.push(`${Math.round(data.squareFootage).toLocaleString('en-US')} sqft`);
-    if (data.yearBuilt) details.push(`built ${data.yearBuilt}`);
+    const ICONS = {
+      bed: '<path d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6M3 18v2M21 18v2M3 12V9a2 2 0 012-2h4v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+      bath: '<path d="M4 12h16a1 1 0 011 1v1a5 5 0 01-5 5H8a5 5 0 01-5-5v-1a1 1 0 011-1zM4 12V6a2 2 0 012-2 2 2 0 012 2M8 20v2M16 20v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+      sqft: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+      year: '<rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    };
+    const detailChips = [];
+    if (data.bedrooms) detailChips.push([ICONS.bed, data.bedrooms, 'Bed']);
+    if (data.bathrooms) detailChips.push([ICONS.bath, data.bathrooms, 'Bath']);
+    if (data.squareFootage) detailChips.push([ICONS.sqft, Math.round(data.squareFootage).toLocaleString('en-US'), 'Sqft']);
+    if (data.yearBuilt) detailChips.push([ICONS.year, data.yearBuilt, 'Built']);
     const propertyDetails = document.getElementById('propertyDetails');
-    propertyDetails.textContent = details.join(' · ');
-    propertyDetails.classList.toggle('hidden', details.length === 0);
+    propertyDetails.innerHTML = detailChips.map(([icon, value, label]) => `
+      <div class="flex items-center gap-3 bg-paper-card border border-paper-line rounded-lg px-4 py-3">
+        <svg width="22" height="22" viewBox="0 0 24 24" class="shrink-0 text-sky-dark">${icon}</svg>
+        <div>
+          <div class="font-display font-extrabold text-xl text-ink leading-none">${value}</div>
+          <div class="text-[10px] font-sans font-bold uppercase tracking-wide text-ink/40 mt-1">${label}</div>
+        </div>
+      </div>
+    `).join('');
+    propertyDetails.classList.toggle('hidden', detailChips.length === 0);
 
     const topPkg = PACKAGES[PACKAGES.length - 1];
     animateValueSpring(document.getElementById('estCeiling'), Math.round(data.value * (1 + topPkg.uplift)), fmtUSD, 1800);
@@ -502,6 +520,19 @@
     staggerPop('.impact-stat');
     setStep(3);
     impact.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const bookParams = new URLSearchParams({
+      address: currentAddress || '',
+      value: String(Math.round(value)),
+      beds: currentEstimate.bedrooms || '',
+      baths: currentEstimate.bathrooms || '',
+      sqft: currentEstimate.squareFootage || '',
+      package: pkg.name,
+      investment: String(cost),
+      profit: String(netGain),
+      projected: String(Math.round(projected)),
+    });
+    document.getElementById('bookConsultCta').href = `book.html?${bookParams.toString()}`;
   }
 </script>
 </body>

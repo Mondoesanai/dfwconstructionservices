@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Consultation | DFW Construction Services</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23161d33'/%3E%3Cpath d='M4 19h16M6 19V10l6-5 6 5v9M10 19v-5h4v5' stroke='%23e14b4e' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: { DEFAULT: '#161d33', 2: '#212a49', 3: '#2c3760' },
+          coral: { DEFAULT: '#e14b4e', dark: '#bf383b', light: '#fbe4e2' },
+          sky: { DEFAULT: '#33aecf', dark: '#1f88a6', light: '#e4f5fa' },
+          paper: { DEFAULT: '#f6f4ef', card: '#ffffff', line: '#e6e2d6' },
+        },
+        fontFamily: {
+          display: ['Montserrat', 'sans-serif'],
+          sans: ['Open Sans', 'sans-serif'],
+        },
+        boxShadow: {
+          card: '0 1px 2px rgba(22,29,51,0.06), 0 6px 16px -6px rgba(22,29,51,0.14)',
+          lift: '0 2px 4px rgba(22,29,51,0.08), 0 14px 28px -10px rgba(225,75,78,0.25)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { background-color: #f6f4ef; }
+
+  .fade-in { animation: fadeIn .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .btn-press:active { transform: scale(0.97); }
+  .btn-press { transition: transform .18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .25s ease, background-color .2s ease; }
+
+  .day-cell {
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color .15s ease, color .15s ease, transform .15s ease;
+  }
+  .day-cell.available { color: #161d33; cursor: pointer; }
+  .day-cell.available:hover { background-color: #fbe4e2; color: #bf383b; transform: scale(1.06); }
+  .day-cell.available.selected { background-color: #e14b4e; color: white; }
+  .day-cell.unavailable { color: #161d33; opacity: .2; cursor: not-allowed; }
+  .day-cell.today:not(.selected) { box-shadow: inset 0 0 0 1.5px #33aecf; }
+
+  .slot-btn { transition: transform .15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color .15s ease, color .15s ease, border-color .15s ease; }
+  .slot-btn:hover { transform: translateY(-1px); }
+  .slot-btn.selected { background-color: #e14b4e; color: white; border-color: #e14b4e; }
+
+  input[type="text"]:focus-visible, input[type="email"]:focus-visible, input[type="tel"]:focus-visible, button:focus-visible {
+    outline: 2px solid #33aecf;
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body class="font-sans text-ink antialiased">
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-paper/90 backdrop-blur border-b border-paper-line">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="assets/dfw-logo.png" alt="DFW Construction Services" class="h-10 sm:h-11 w-auto">
+        <div class="hidden sm:block text-[10px] tracking-[0.14em] text-ink/40 font-sans font-semibold uppercase border-l border-paper-line pl-3">Flat-Fee<br>Facelift</div>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="book.html" class="btn-press text-xs sm:text-sm font-display font-bold px-4 sm:px-5 py-2.5 rounded-md bg-coral text-white shadow-card">Book Consultation</a>
+        <a href="index.html" class="btn-press text-xs sm:text-sm font-display font-bold px-4 sm:px-5 py-2.5 rounded-md border border-ink/15 text-ink hover:border-coral hover:text-coral">Run the Tool</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+    <div id="bookingWrap" class="grid md:grid-cols-[300px_1fr] bg-paper-card rounded-lg shadow-card border border-paper-line overflow-hidden">
+
+      <!-- LEFT: summary -->
+      <div class="bg-ink text-white p-6 sm:p-8">
+        <div class="text-[11px] font-sans font-bold uppercase tracking-[0.16em] text-sky-light/80 mb-3">DFW Construction Services</div>
+        <h1 class="font-display font-extrabold text-2xl tracking-[-0.01em] mb-4">In-Home Facelift Consultation</h1>
+
+        <div class="flex items-center gap-2.5 text-sm text-white/70 mb-2.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="shrink-0"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          45 min
+        </div>
+        <div class="flex items-center gap-2.5 text-sm text-white/70 mb-6">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="shrink-0"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0119 9.5C19 14.9 12 21 12 21z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.2" stroke="currentColor" stroke-width="2"/></svg>
+          At your property
+        </div>
+
+        <div class="border-t border-white/10 pt-5">
+          <div class="text-[10px] font-sans font-bold uppercase tracking-wide text-white/40 mb-3">Consultation Details</div>
+          <div class="space-y-3 text-sm" id="summaryFields">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: booking widget -->
+      <div class="p-6 sm:p-8">
+
+        <div id="pickerStep">
+          <div class="flex items-center justify-between mb-4">
+            <button id="prevMonth" type="button" class="btn-press w-8 h-8 rounded-md border border-paper-line flex items-center justify-center text-ink/50 hover:text-coral hover:border-coral">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div id="monthLabel" class="font-display font-bold text-sm uppercase tracking-wide text-ink"></div>
+            <button id="nextMonth" type="button" class="btn-press w-8 h-8 rounded-md border border-paper-line flex items-center justify-center text-ink/50 hover:text-coral hover:border-coral">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-sans font-bold uppercase tracking-wide text-ink/35 mb-2">
+            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+          </div>
+          <div id="calendarGrid" class="grid grid-cols-7 gap-1 mb-6"></div>
+
+          <div id="slotsSection" class="hidden mb-6">
+            <div class="text-xs font-sans font-bold uppercase tracking-wide text-ink/45 mb-3" id="slotsLabel">Available Times</div>
+            <div id="slotsGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-2"></div>
+          </div>
+
+          <form id="contactForm" class="hidden space-y-3 border-t border-paper-line pt-6 fade-in">
+            <div class="text-xs font-sans font-bold uppercase tracking-wide text-ink/45 mb-1">Your Info</div>
+            <input type="text" required placeholder="Full name" class="w-full rounded-md border border-paper-line bg-paper px-4 py-3 text-sm focus-visible:border-sky">
+            <input type="tel" required placeholder="Phone number" class="w-full rounded-md border border-paper-line bg-paper px-4 py-3 text-sm focus-visible:border-sky">
+            <input type="email" required placeholder="Email address" class="w-full rounded-md border border-paper-line bg-paper px-4 py-3 text-sm focus-visible:border-sky">
+            <button type="submit" class="btn-press w-full bg-coral hover:bg-coral-dark text-white font-display font-bold text-sm py-3.5 rounded-md shadow-lift mt-2">Confirm Consultation</button>
+          </form>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div id="successStep" class="hidden text-center py-8 fade-in">
+          <div class="w-14 h-14 rounded-full bg-coral flex items-center justify-center mx-auto mb-5">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="font-display font-extrabold text-2xl text-ink mb-2">You're booked!</h3>
+          <p id="successRecap" class="text-sm text-ink/55 max-w-sm mx-auto leading-relaxed mb-1">—</p>
+          <p class="text-xs text-ink/40 font-sans">A DFW Construction estimator will call to confirm.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const fmtUSD = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+  const address = params.get('address') || '';
+  const pkgName = params.get('package') || '';
+  const beds = params.get('beds') || '';
+  const baths = params.get('baths') || '';
+  const sqft = params.get('sqft') || '';
+  const investment = params.get('investment') || '';
+  const profit = params.get('profit') || '';
+
+  const summaryFields = document.getElementById('summaryFields');
+  const rows = [];
+  rows.push(['Property', address || 'Not yet specified — run the tool first for a custom quote']);
+  if (beds || baths || sqft) {
+    const homeBits = [beds && `${beds} bed`, baths && `${baths} bath`, sqft && `${Number(sqft).toLocaleString('en-US')} sqft`].filter(Boolean);
+    rows.push(['Home', homeBits.join(' · ')]);
+  }
+  if (pkgName) rows.push(['Package', pkgName]);
+  if (investment) rows.push(['Investment', fmtUSD(investment)]);
+  if (profit) rows.push(['Projected Profit', `+${fmtUSD(profit)}`]);
+
+  summaryFields.innerHTML = rows.map(([label, value]) => `
+    <div>
+      <div class="text-white/40 text-[11px] font-sans font-semibold uppercase tracking-wide">${label}</div>
+      <div class="text-white font-semibold">${value}</div>
+    </div>
+  `).join('');
+
+  // ---- calendar ----
+  const SLOTS = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+  let viewDate = new Date();
+  viewDate.setDate(1);
+  let selectedDate = null;
+  let selectedTime = null;
+
+  const monthLabel = document.getElementById('monthLabel');
+  const calendarGrid = document.getElementById('calendarGrid');
+  const slotsSection = document.getElementById('slotsSection');
+  const slotsGrid = document.getElementById('slotsGrid');
+  const slotsLabel = document.getElementById('slotsLabel');
+  const contactForm = document.getElementById('contactForm');
+  const prevMonthBtn = document.getElementById('prevMonth');
+
+  function isSameDay(a, b) {
+    return a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+
+  function renderCalendar() {
+    monthLabel.textContent = viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const firstWeekday = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+    prevMonthBtn.disabled = isCurrentMonth;
+    prevMonthBtn.classList.toggle('opacity-30', isCurrentMonth);
+    prevMonthBtn.classList.toggle('cursor-not-allowed', isCurrentMonth);
+
+    calendarGrid.innerHTML = '';
+    for (let i = 0; i < firstWeekday; i++) {
+      calendarGrid.appendChild(document.createElement('div'));
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const cellDate = new Date(year, month, d);
+      const isPast = cellDate < today;
+      const isWeekend = cellDate.getDay() === 0 || cellDate.getDay() === 6;
+      const available = !isPast && !isWeekend;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = d;
+      btn.disabled = !available;
+      btn.className = `day-cell ${available ? 'available' : 'unavailable'}`;
+      if (isSameDay(cellDate, today)) btn.classList.add('today');
+      if (isSameDay(cellDate, selectedDate)) btn.classList.add('selected');
+      if (available) btn.addEventListener('click', () => selectDate(cellDate));
+      calendarGrid.appendChild(btn);
+    }
+  }
+
+  function selectDate(date) {
+    selectedDate = date;
+    selectedTime = null;
+    renderCalendar();
+
+    slotsLabel.textContent = `Available — ${date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`;
+    slotsGrid.innerHTML = SLOTS.map(slot => `
+      <button type="button" class="slot-btn text-xs font-sans font-bold py-2.5 rounded-md border border-paper-line text-ink" data-slot="${slot}">${slot}</button>
+    `).join('');
+    slotsSection.classList.remove('hidden');
+    contactForm.classList.add('hidden');
+
+    slotsGrid.querySelectorAll('.slot-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectTime(btn.dataset.slot, btn));
+    });
+  }
+
+  function selectTime(slot, btnEl) {
+    selectedTime = slot;
+    slotsGrid.querySelectorAll('.slot-btn').forEach(b => b.classList.toggle('selected', b === btnEl));
+    contactForm.classList.remove('hidden');
+    contactForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.getElementById('prevMonth').addEventListener('click', () => {
+    viewDate.setMonth(viewDate.getMonth() - 1);
+    renderCalendar();
+  });
+  document.getElementById('nextMonth').addEventListener('click', () => {
+    viewDate.setMonth(viewDate.getMonth() + 1);
+    renderCalendar();
+  });
+
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('pickerStep').classList.add('hidden');
+    const successStep = document.getElementById('successStep');
+    document.getElementById('successRecap').textContent =
+      `${selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at ${selectedTime}` +
+      (address ? ` — ${address}` : '');
+    successStep.classList.remove('hidden');
+  });
+
+  renderCalendar();
+</script>
+</body>
+</html>
